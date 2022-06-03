@@ -1,3 +1,5 @@
+#![windows_subsystem = "windows"]
+
 use std::fs;
 
 // maybe one day i'll figure out how to hook it to roblox updating
