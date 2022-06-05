@@ -1,10 +1,16 @@
 #![windows_subsystem = "windows"]
 
-use std::fs;
+use std::{
+	fs,
+	io::ErrorKind,
+};
+use home::home_dir;
 
-// maybe one day i'll figure out how to hook it to roblox updating
+// maybe one day i'll figure out how to hook it to roblox updating w/ shim
 fn main() -> std::io::Result<()>{
-	let mut dirs = fs::read_dir("C:\\Users\\Leo\\AppData\\Local\\Roblox\\Versions")?
+	let mut path = home_dir().unwrap();
+	path.push("AppData\\Local\\Roblox\\Versions");
+	let mut dirs = fs::read_dir(path)?
 		.flatten()
 		.filter(|dir| dir.file_type().unwrap().is_dir());
 
@@ -17,9 +23,14 @@ fn main() -> std::io::Result<()>{
 
 	let mut path = last.path().clone();
 	path.push("ClientSettings");
-	fs::create_dir(&path)?;
+	if let Some(err) = fs::create_dir(&path).err() {
+		match err.kind() {
+			ErrorKind::AlreadyExists => (),
+			_ => return Err(err),
+		}
+	}
 	path.push("ClientAppSettings.json");
-	fs::copy("C:\\Users\\Leo\\Documents\\ClientAppSettings.json", path)?;
+	fs::write(path, "{\"FFlagHandleAltEnterFullscreenManually\":\"False\"}")?;
 
 	Ok(())
 }

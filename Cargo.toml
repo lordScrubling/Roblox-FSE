@@ -7,3 +7,6 @@ edition = "2021"
 
 [profile.release]
 strip = "symbols"
+
+[dependencies]
+home = "0.5.3"
