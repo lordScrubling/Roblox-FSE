@@ -25,7 +25,7 @@ fn main() -> std::io::Result<()>{
 	path.push("ClientSettings");
 	if let Some(err) = fs::create_dir(&path).err() {
 		match err.kind() {
-			ErrorKind::AlreadyExists => (),
+			ErrorKind::AlreadyExists => return Ok(()),
 			_ => return Err(err),
 		}
 	}
